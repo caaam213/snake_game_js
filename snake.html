@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <!--Vue framework-->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    </head>
+    <body style="font-size:20px !important;overflow-y:auto;">
+        <!--Homepage-->
+        <div class="container" id="app">
+            <div id="homepage" style="margin-top:0%;">
+                <h1 class="text-center display-4">SNAKE JAVASCRIPT</h1>
+
+                <p class="text-center mt-3">Welcome to this Snake game created by MERAOUI Camelia</p>
+
+                <h5 class="text-center">Choose a level</h5>
+
+                <div class="row mt-3">
+                    <select class="mx-auto form-control col-5" name="level">
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+
+                <div class="row mt-3">
+                    <button class="btn btn-secondary mx-auto px-4" id="validate">Ok</button>
+                </div>
+            </div>
+
+            <canvas id="canvas"></canvas>
+
+         
+        </div>
+        
+        <script src="snake.js"></script>
+    </body>
+</html>
