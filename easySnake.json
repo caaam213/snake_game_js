@@ -1,0 +1,10 @@
+{
+    "dimensions":[28,25],
+    "delay":800,
+    "food":[2,0],
+    "snake":[[0,0],[0,1]],
+    "colorSnake":"white",
+    "colorField":"green",
+    "colorFood":"red",
+    "multi":1
+}

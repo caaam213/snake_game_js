@@ -1,6 +1,22 @@
-var container = document.getElementById("app");
+var jsonFile = " ";
+var perdu = false;
+var combo = document.getElementById("level");
 var buttonValidate = document.getElementById("validate");
+var container = document.getElementById("app");
 var canvas = document.getElementById("canvas");
+
+
+//Game variables
+var d1;
+var d2;
+var delay;
+var colorSnake;
+var colorField;
+var colorFood;
+const width = 25;  
+var SNAKE; 
+var FOOD;
+var multi;
 
 //This function is called when I click on the "Ok" button
 buttonValidate.addEventListener("click", function(){
@@ -10,7 +26,83 @@ buttonValidate.addEventListener("click", function(){
 //Play the game
 function goToGame()
 {
+    perdu = false;
     gameOn();
+}
+
+
+$(document).ready(function() {
+    $.getJSON("easySnake.json", function(jd) {
+        d1 = jd.dimensions[0];
+        d2 = jd.dimensions[1];
+        delay = jd.delay;
+        colorSnake = jd.colorSnake;
+        colorField = jd.colorField;
+        colorFood = jd.colorFood;
+        SNAKE = jd.snake;
+        FOOD = jd.food;
+        multi = jd.multi;
+
+        console.log(jd.delay);
+        });
+        $("#level").change(function(event){
+                
+            var level = combo.value;
+            console.log(level);
+            if(level=="easy")
+            {
+                jsonFile ="./easySnake"+".json";
+            }
+            else if(level=="medium")
+            {
+                jsonFile ="./mediumSnake"+".json";
+            }
+            else
+            {
+                jsonFile ="./hardSnake"+".json";
+            }
+            $.getJSON(jsonFile, function(jd) {
+                d1 = jd.dimensions[0];
+                d2 = jd.dimensions[1];
+                delay = jd.delay;
+                colorSnake = jd.colorSnake;
+                colorField = jd.colorField;
+                colorFood = jd.colorFood;
+                SNAKE = jd.snake;
+                FOOD = jd.food;
+                multi = jd.multi;
+                console.log(jd.delay);
+            });
+        });
+               
+});
+
+function loadJSON() {
+    var combo2 = document.getElementById("level");
+    var level = combo2.value;
+    console.log(level);
+    if(level=="easy")
+    {
+        jsonFile ="./easySnake"+".json";
+    }
+    else if(level=="medium")
+    {
+        jsonFile ="./mediumSnake"+".json";
+    }
+    else
+    {
+        jsonFile ="./hardSnake"+".json";
+    }
+    $.getJSON(jsonFile, function(jd) {
+        d1 = jd.dimensions[0];
+        d2 = jd.dimensions[1];
+        delay = jd.delay;
+        colorSnake = jd.colorSnake;
+        colorField = jd.colorField;
+        colorFood = jd.colorFood;
+        SNAKE = jd.snake;
+        FOOD = jd.food;
+        multi = jd.multi;});
 }
 
 //Select a level on the homepage
@@ -23,7 +115,7 @@ function goToHomePage()
     '<h5 class="text-center">Choose a level</h5>'+
 
     '<div class="row mt-3">'+
-        '<select class="mx-auto form-control col-5" name="level">'+
+        '<select class="mx-auto form-control col-5" onchange="loadJSON()" id="level" name="level">'+
             '<option value="easy">Easy</option>'+
             '<option value="medium">Medium</option>'+
             '<option value="hard">Hard</option>'+
@@ -34,33 +126,55 @@ function goToHomePage()
         '<button class="btn btn-secondary mx-auto px-4" onclick="gameOn()" id="validate">Ok</button>'+
     '</div></div><canvas id="canvas">'+'</canvas></div>';
     container.innerHTML = html;
+
+    $.getJSON("easySnake.json", function(jd) {
+        d1 = jd.dimensions[0];
+        d2 = jd.dimensions[1];
+        delay = jd.delay;
+        colorSnake = jd.colorSnake;
+        colorField = jd.colorField;
+        colorFood = jd.colorFood;
+        SNAKE = jd.snake;
+        FOOD = jd.food;
+        multi = jd.multi;});
+        
     
         canvas.setAttribute(name="height", 0);
         canvas.setAttribute(name="width", 0);
         buttonValidate.addEventListener("click", function(){
             goToGame();
         });
-    
 }
-//TODO: ADD WIDTH SQUARE AS ATTRIBUTE
+
+
 //TODO: ADD JSON FILE TO KEEP IN MEMORY THE BEST SCORE AND DISPLAY IT WHEN THE USER LOST ON THE ALERT
-//TODO: IMPROVE FOOD GENERATION WHEN IT HAS THE SAME COORDINATES THAN THE SNAKE'S BODY
 //TODO: ADD SCORE AND FILL JSON FILE. IMPROVE CONFIGURATION IN ORDER TO BE ADAPTED WITH EVERY CONFIGURATION ON THE JSON FILE
 
 //Launch when the game is on
 function gameOn()
 {
+    
+
+    var score = 0;
     var homePageContainer = document.getElementById('homepage');
     var canvas = document.getElementById("canvas");
     homePageContainer.remove();  
+    var scoreText = "<p id='score'>Your score : <span id='score'>0</span></p>";
+    container.insertAdjacentHTML("beforeend", scoreText);
+    
+    //Selecting a random song
+    tabSong = ["Astronomia.mp3","Naruto.mp3","OnePiece.mp3"];
+    var nbSong = getRandomInt(tabSong.length);
 
+    var audio = "<audio controls autoplay loop style='display:none;'><source src='"+tabSong[nbSong]+"' type='audio/mp3'></audio>";
+    container.insertAdjacentHTML("beforeend", audio);
+    
     //Game configuration
     /*
         WORLD : 16x12 d1xd2
         SNAKE : SNAKE[0] represents the snake position. SNAKE[1] represents its length
      */
-    var d1 = 16; 
-    var d2 = 12;
+    
     var WORLD = new Array(d1);
 
     for(var i = 0;i<d1;i++)
@@ -71,15 +185,13 @@ function gameOn()
             WORLD[i][j] = 0; //Fill each element of an array by 0
         }
     }
-
     
-    var SNAKE = [[0,0]]; 
-    var FOOD = [8,8];
+    
     for(var i=0;i<SNAKE.length;i++)
     {
-        WORLD[SNAKE[i][0],SNAKE[i][1]] = 1;
+        WORLD[SNAKE[i][0]][SNAKE[i][1]] = 1;
     }
-    WORLD[FOOD[0],FOOD[1]] = 2;
+    WORLD[FOOD[0]][FOOD[1]] = 2;
     
 
 
@@ -88,24 +200,22 @@ function gameOn()
     */
     var x1Rect = 200;
     var y1Rect = 50;
-    var x2Rect = 1000;
-    var y2Rect = 600;
 
     
-    canvas.setAttribute(name="height", 700);
-    canvas.setAttribute(name="width", 1000);
+    canvas.setAttribute(name="height", width*d2);
+    canvas.setAttribute(name="width",x1Rect+(width*d1)-50);
 
     var context = canvas.getContext("2d");
     var keyLastPressed = "RIGHT"; //Right key is pressed by default
-    context.fillStyle ='lightgray';
-    context.fillRect(x1Rect, y1Rect, x2Rect, y2Rect);
+    context.fillStyle =colorField;
+    context.fillRect(x1Rect, y1Rect, x1Rect+d1*width, width*d2);
     SNAKE.forEach(function(oneCoordinate)
     {
-        context.fillRect(x1Rect+50*oneCoordinate[0],y1Rect+50*oneCoordinate[1],50,50);
+        context.fillRect(x1Rect+width*oneCoordinate[0],y1Rect+width*oneCoordinate[1],width,width);
     });
     
-    context.fillStyle = "red";
-    context.fillRect(x1Rect+50*FOOD[0],y1Rect+50*FOOD[1],50,50);
+    context.fillStyle = colorFood;
+    context.fillRect(x1Rect+width*FOOD[0],y1Rect+width*FOOD[1],width,width);
 
     //End game configuration
 
@@ -151,7 +261,7 @@ function gameOn()
         
         
 
-    },200);
+    },delay);
 
     //This function is called when the snake is out of the background
    
@@ -166,11 +276,8 @@ function gameOn()
                     return true;
                 }
             }
-            
-            
         }
-        
-        if(SNAKE[SNAKE.length-1][0]<0 || SNAKE[SNAKE.length-1][0]>=d1 || SNAKE[SNAKE.length-1][1]<0 || SNAKE[SNAKE.length-1][1]>=d2)
+        if(SNAKE[SNAKE.length-1][0]<0|| SNAKE[SNAKE.length-1][0]+1>=d1 || SNAKE[SNAKE.length-1][1]<0 || SNAKE[SNAKE.length-1][1]+1>=d2)
         {
             return true;
         }
@@ -186,12 +293,30 @@ function gameOn()
     //Generate random number for food
     function getRandomInt(max) {
         return Math.floor(Math.random() * Math.floor(max));
-      }
+    }
+
+    function generateFood() {
+        x = getRandomInt(d1-2);
+        y = getRandomInt(d2-2);
+        SNAKE.forEach(function a(part) {
+            var has_eaten = (part[0]==x && part[1]==y) || (FOOD[0]==x && FOOD[1]==y);
+            
+            if (has_eaten) generateFood();
+        });
+          WORLD[FOOD[0]][FOOD[1]] = 0;
+          FOOD[0] = x;
+          FOOD[1] = y;
+          WORLD[x][y] = 2;
+    }
     
     function eatFood()
     {
+        
         if(FOOD[0]==SNAKE[SNAKE.length-1][0]&&FOOD[1]==SNAKE[SNAKE.length-1][1])
         {
+            score+=10*multi;
+            var scoreT = document.getElementById("score");
+            scoreT.innerHTML = "Your score : "+score;
             var grow;
             if(keyLastPressed=="LEFT")
             {
@@ -212,44 +337,45 @@ function gameOn()
             SNAKE.unshift(grow);
 
             //Generate FOOD
-            var value = WORLD[FOOD[0]][FOOD[1]];
-            
-            
-
-            while(value!=0)
-            {
-                x = getRandomInt(d1);
-                y = getRandomInt(d2);
-                value = WORLD[x][y];
-            }  
-            WORLD[FOOD[0]][FOOD[1]] = 0;
-            FOOD[0] = x;
-            FOOD[1] = y
-            context.fillStyle = "red";
-            WORLD[x][y] = 2;
-            context.fillRect(x1Rect+50*FOOD[0],y1Rect+50*FOOD[1],50,50);
-
+             
+            generateFood();
+            console.log(FOOD[0]+ " "+FOOD[1]);
         }
+        
+        
+        
+        context.fillStyle = colorFood;
+        
+        context.fillRect(x1Rect+width*FOOD[0],y1Rect+width*FOOD[1],width,width);
+        
+
     }
 
 
     function goDown()
     {
         
-        context.fillStyle = "lightgray";
-        context.fillRect(x1Rect+50*SNAKE[0][0],y1Rect+50*SNAKE[0][1],50,50);
+        context.fillStyle = colorField;
+        context.fillRect(x1Rect+width*SNAKE[0][0],y1Rect+width*SNAKE[0][1],width,50);
         var el = [SNAKE[SNAKE.length-1][0],SNAKE[SNAKE.length-1][1]+1];
-        WORLD[SNAKE[0][0],SNAKE[0][1]]=0;
+        if(SNAKE[SNAKE.length-1][1]>0)
+        {
+            WORLD[SNAKE[0][0]][SNAKE[0][1]]=0;
+        }
+        
         SNAKE.shift();
+
         
         SNAKE.push(el);
 
         for(var i=0;i<SNAKE.length;i++)
         {
-            WORLD[SNAKE[i][0],SNAKE[i][1]]=1;
-            console.log(SNAKE[i][0]+ " "+SNAKE[i][1]);
-            context.fillStyle = "orange";
-            context.fillRect(x1Rect+50*SNAKE[SNAKE.length-1][0],y1Rect+50*SNAKE[SNAKE.length-1][1],50,50);
+            if(SNAKE[SNAKE.length-1][1]>0)
+            {
+                WORLD[SNAKE[i][0]][SNAKE[i][1]]=1;
+            }
+            context.fillStyle = colorSnake;
+            context.fillRect(x1Rect+width*SNAKE[SNAKE.length-1][0],y1Rect+width*SNAKE[SNAKE.length-1][1],width,width);
         }
         if(lose())
         {
@@ -265,20 +391,27 @@ function gameOn()
     function goUp()
     {
         
-        context.fillStyle = "lightgray";
-        context.fillRect(x1Rect+50*SNAKE[0][0],y1Rect+50*SNAKE[0][1],50,50);
+        context.fillStyle = colorField;
+        context.fillRect(x1Rect+width*SNAKE[0][0],y1Rect+width*SNAKE[0][1],width,50);
         var el = [SNAKE[SNAKE.length-1][0],SNAKE[SNAKE.length-1][1]-1];
-        WORLD[SNAKE[0][0],SNAKE[0][1]]=0;
+        if(SNAKE[SNAKE.length-1][1]>0)
+        {
+            WORLD[SNAKE[0][0]][SNAKE[0][1]]=0;
+        }
+        
         SNAKE.shift();
+
         
         SNAKE.push(el);
 
         for(var i=0;i<SNAKE.length;i++)
         {
-            WORLD[SNAKE[i][0],SNAKE[i][1]]=1;
-            console.log(SNAKE[i][0]+ " "+SNAKE[i][1]);
-            context.fillStyle = "orange";
-            context.fillRect(x1Rect+50*SNAKE[SNAKE.length-1][0],y1Rect+50*SNAKE[SNAKE.length-1][1],50,50);
+            if(SNAKE[SNAKE.length-1][1]>0)
+            {
+                WORLD[SNAKE[i][0]][SNAKE[i][1]]=1;
+            }
+            context.fillStyle = colorSnake;
+            context.fillRect(x1Rect+width*SNAKE[SNAKE.length-1][0],y1Rect+width*SNAKE[SNAKE.length-1][1],width,width);
         }
         if(lose())
         {
@@ -293,21 +426,21 @@ function gameOn()
 
     function goRight()
     {
+       
+        context.fillStyle = colorField;
+        context.fillRect(x1Rect+width*SNAKE[0][0],y1Rect+width*SNAKE[0][1],width,50);
         
-        context.fillStyle = "lightgray";
-        context.fillRect(x1Rect+50*SNAKE[0][0],y1Rect+50*SNAKE[0][1],50,50);
         var el = [SNAKE[SNAKE.length-1][0]+1,SNAKE[SNAKE.length-1][1]];
-        WORLD[SNAKE[0][0],SNAKE[0][1]]=0;
+        WORLD[SNAKE[0][0]][SNAKE[0][1]]=0;
         SNAKE.shift();
         
         SNAKE.push(el);
-        
+
         for(var i=0;i<SNAKE.length;i++)
         {
-            WORLD[SNAKE[i][0],SNAKE[i][1]]=1;
-            console.log(SNAKE[i][0]+ " "+SNAKE[i][1]);
-            context.fillStyle = "orange";
-            context.fillRect(x1Rect+50*SNAKE[SNAKE.length-1][0],y1Rect+50*SNAKE[SNAKE.length-1][1],50,50);
+            WORLD[SNAKE[i][0]][SNAKE[i][1]]=1;
+            context.fillStyle = colorSnake;
+            context.fillRect(x1Rect+width*SNAKE[SNAKE.length-1][0],y1Rect+width*SNAKE[SNAKE.length-1][1],width,width);
         }
         if(lose())
         {
@@ -316,28 +449,39 @@ function gameOn()
             stop();
         }
         eatFood();
+       
         
     }
+    
 
     function goLeft()
     {
         
-        context.fillStyle = "lightgray";
-        context.fillRect(x1Rect+50*SNAKE[0][0],y1Rect+50*SNAKE[0][1],50,50);
+        context.fillStyle = colorField;
+        context.fillRect(x1Rect+width*SNAKE[0][0],y1Rect+width*SNAKE[0][1],width,50);
+        
         var el = [SNAKE[SNAKE.length-1][0]-1,SNAKE[SNAKE.length-1][1]];
-        WORLD[SNAKE[0][0],SNAKE[0][1]]=0;
+        if(SNAKE[0][0]!=-1)
+        {
+            WORLD[SNAKE[0][0]][SNAKE[0][1]]=0;
+        }
+        
         SNAKE.shift();
         
         SNAKE.push(el);
 
         for(var i=0;i<SNAKE.length;i++)
         {
-            WORLD[SNAKE[i][0],SNAKE[i][1]]=1;
-            console.log(SNAKE[i][0]+ " "+SNAKE[i][1]);
-            context.fillStyle = "orange";
-            context.fillRect(x1Rect+50*SNAKE[SNAKE.length-1][0],y1Rect+50*SNAKE[SNAKE.length-1][1],50,50);
-        }
+            if(SNAKE[i][0]!=-1)
+            {
+                WORLD[SNAKE[i][0]][SNAKE[i][1]]=1;
+            }
+            context.fillStyle = colorSnake;
+            context.fillRect(x1Rect+width*SNAKE[SNAKE.length-1][0],y1Rect+width*SNAKE[SNAKE.length-1][1],width,width);
 
+        }
+        
+        
         if(lose())
         {
             alert("perdu");
@@ -345,5 +489,10 @@ function gameOn()
             stop();
         }
         eatFood();
-    }
+       
+        
+    } 
+            
 }
+       
+    
