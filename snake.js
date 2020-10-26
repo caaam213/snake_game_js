@@ -28,7 +28,6 @@ function valuesWithoutJSON(){
     SNAKE=[[0,0],[1,0]];
     FOOD=[2,8];
     multi = 2;
-    
 
 }
 
@@ -215,7 +214,7 @@ function gameOn()
     container.insertAdjacentHTML("beforeend", scoreText);
     
     //Selecting a random song
-    tabSong = ["Astronomia.mp3","Naruto.mp3","OnePiece.mp3","DemonSlayer.mp3"];
+    tabSong = ["Astronomia.mp3","Naruto.mp3","OnePiece.mp3","DemonSlayer.mp3","comethru.mp3"];
     var nbSong = getRandomInt(tabSong.length);
 
     var audio = "<audio controls autoplay loop style='display:none;'><source src='"+tabSong[nbSong]+"' type='audio/mp3'></audio>";

@@ -1,6 +1,6 @@
 {
     "dimensions":[32,24],
-    "delay":200,
+    "delay":150,
     "food":[10,20],
     "snake":[[0,0],[0,1],[0,2]],
     "colorField":"violet",
