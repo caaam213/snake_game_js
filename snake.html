@@ -9,13 +9,16 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     </head>
-    <body style="font-size:20px !important;overflow-y:auto;">
+    <body id="body" style="font-size:20px !important;overflow-y:auto;background-color:lightgreen">
         <!--Homepage-->
         <div class="container" id="app">
             <div id="homepage" style="margin-top:0%;">
                 <h1 class="text-center display-4">SNAKE JAVASCRIPT</h1>
 
-                <p class="text-center mt-3">Welcome to this Snake game created by MERAOUI Camelia</p>
+                <div class="row justify-content-center">
+                    <img class="col-1" src="character.png" alt=""/>
+                    <p class="col-5 mt-3" style="font-size:18px;">Help Charlie to be bigger by giving him some food</p>
+                </div>
 
                 <h5 class="text-center">Choose a level</h5>
 
@@ -30,8 +33,13 @@
                 <div class="row mt-3">
                     <button class="btn btn-secondary mx-auto px-4" id="validate">Ok</button>
                 </div>
+                <div class="row">
+                    <iframe src="https://giphy.com/embed/tVHqp1rty3dgf9jmJt" class=" mx-auto mt-5" width="250" height="250" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p>
+                        <a href="https://giphy.com/gifs/pizza-wolke-giessen-sound-on-pizzawolke-pizza-wolke-tVHqp1rty3dgf9jmJt"></a></p>
+                </div>
             </div>
 
+            
             <canvas id="canvas"></canvas>
 
          

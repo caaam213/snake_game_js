@@ -1,10 +1,9 @@
 {
     "dimensions":[32,24],
-    "delay":300,
+    "delay":200,
     "food":[10,20],
     "snake":[[0,0],[0,1],[0,2]],
-    "colorSnake":"pink",
     "colorField":"violet",
-    "colorFood":"black",
+    "foodImage":"Cookie.png",
     "multi":2
 }

@@ -3,8 +3,7 @@
     "delay":100,
     "food":[30,20],
     "snake":[[0,0],[0,1],[0,2],[0,3]],
-    "colorSnake":"black",
     "colorField":"lightblue",
-    "colorFood":"yellow",
+    "foodImage":"Chicken.png",
     "multi":3
 }
